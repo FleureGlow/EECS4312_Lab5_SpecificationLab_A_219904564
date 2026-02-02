@@ -1,10 +1,12 @@
-## Student Name:
-## Student ID: 
+## Student Name:Fatoumata Dieng
+## Student ID: 219904564
 
-Prompt 1: "Copy paste your question"
-LLM Response 1: "Copy paste LLMs response"
 
---------------------------------------------------
-Prompt 2: "Copy paste your question"
-LLM Response 2: "Copy paste LLMs response"
---------------------------------------------------
+Prompt 1: Error while running tests
+LLM Response 1: f anything fails, it usually means your lab handout’s rules differ from these assumptions (common differences):
+
+slot step is 15 minutes, not 30
+
+work hours differ (e.g., 8–6 or includes lunch break)
+
+events are treated as closed intervals ([start,end] instead of [start,end))
