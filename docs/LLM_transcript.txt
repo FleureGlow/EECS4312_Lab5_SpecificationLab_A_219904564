@@ -10,3 +10,42 @@ slot step is 15 minutes, not 30
 work hours differ (e.g., 8–6 or includes lunch break)
 
 events are treated as closed intervals ([start,end] instead of [start,end))
+
+Prompt 2: Solution.py modification 
+
+when modifying the solution.py file I just need to edit the suggest_slots addd the new requirement and modify the work hours as the friday date has a new constraint and all the rest stays the same?
+
+✅ What you need to change
+
+Inside solution.py, in suggest_slots:
+
+Update Friday working hours
+
+"Fri": ("09:00", "15:00"),
+
+
+Add the new constraint
+Ensure start times after 15:00 are excluded on Friday.
+
+Everything else stays the same:
+
+event handling
+
+lunch blocking
+
+merging intervals
+
+slot grid logic
+
+sorting
+
+helper functions
+
+✅ Summary (safe answer for lab)
+
+You are:
+
+✔ modifying suggest_slots
+✔ updating Friday working hours
+✔ enforcing the new Friday start-time rule
+✔ leaving all other logic unchanged
