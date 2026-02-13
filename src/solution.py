@@ -23,22 +23,18 @@ def suggest_slots(
     Rules implemented:
       - Working hours depend on weekday:
           Mon–Thu: 09:00–17:00
-          Fri:     09:00–15:00
+          Fri:     09:00–15:00  (working hours)
       - Lunch break is blocked: 12:00–13:00 (no meetings may overlap it)
-      - Meetings can start on a fixed grid (every 30 minutes).
+      - Meetings can start on a fixed grid (every 15 minutes).
       - An event blocks time in [start, end) (end time is free).
       - Events may overlap / be unsorted.
       - `day` can be either:
           * a weekday abbreviation: "Mon", "Tue", ... "Fri"
           * a date string: "YYYY-MM-DD" (converted to weekday)
 
-    Args:
-        events: List of dicts with keys {"start": "HH:MM", "end": "HH:MM"}
-        meeting_duration: Desired meeting length in minutes
-        day: "Mon".."Fri" OR "YYYY-MM-DD"
-
-    Returns:
-        List of valid start times as "HH:MM" sorted ascending
+    NEW REQUIREMENT:
+      - On Fridays, meeting start times must NOT be after 15:00.
+        (15:00 is allowed; 15:15+ are not.)
     """
 
     # --- helpers ---
@@ -91,10 +87,6 @@ def suggest_slots(
     work_start = to_minutes(WORK_HOURS[day][0])
     work_end = to_minutes(WORK_HOURS[day][1])
 
-    # If meeting can't even fit in the day, early exit
-    if work_start + meeting_duration > work_end:
-        return []
-
     # --- build busy intervals (events + lunch), clamped to working hours ---
     busy: List[List[int]] = []
 
@@ -128,7 +120,7 @@ def suggest_slots(
     busy = merge_intervals(busy)
 
     # --- generate candidate start times on a grid ---
-    SLOT_STEP = 30  # minutes (adjust if your handout says 15, 10, etc.)
+    SLOT_STEP = 15  # ✅ per your note: 15 minutes
 
     # Align first candidate to the step grid at/after work_start
     first = work_start
@@ -140,7 +132,15 @@ def suggest_slots(
     i = 0  # pointer into busy intervals
 
     t = first
-    latest_start = work_end - meeting_duration
+
+    # IMPORTANT:
+    # Use normal "fit in workday" rule for Mon–Thu.
+    # For Friday, the NEW rule is about start time <= 15:00.
+    if day == "Fri":
+        latest_start = min(work_end, to_minutes("15:00"))
+    else:
+        latest_start = work_end - meeting_duration
+
     while t <= latest_start:
         meeting_end = t + meeting_duration
 
